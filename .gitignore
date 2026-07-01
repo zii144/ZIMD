@@ -19,3 +19,6 @@ src-tauri/gen/
 # Logs
 *.log
 npm-debug.log*
+
+# Verification output
+verify-report.txt

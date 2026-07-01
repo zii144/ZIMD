@@ -11,6 +11,19 @@ export interface TocItem {
   level: number;
 }
 
+export interface PaletteCommand {
+  id: string;
+  title: string;
+  hint?: string;
+  icon: string;
+  run: () => void;
+}
+
+export interface PaletteFile {
+  name: string;
+  path: string;
+}
+
 export type ThemeMode = "light" | "dark";
 export type ReadingFont = "sans" | "serif";
 
@@ -23,4 +36,5 @@ export interface Settings {
   measure: number;
   sidebarOpen: boolean;
   tocOpen: boolean;
+  focus: boolean;
 }

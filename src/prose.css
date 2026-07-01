@@ -309,6 +309,19 @@
   border-color: var(--accent-soft);
 }
 
+/* ---------- Focus mode ---------- */
+.zimd-prose.focus > * {
+  opacity: 0.26;
+  transition: opacity var(--dur-2) var(--ease);
+}
+.zimd-prose.focus > .focus-active {
+  opacity: 1;
+}
+/* Keep the active block's neighbours faintly more legible. */
+.zimd-prose.focus > .focus-active + * {
+  opacity: 0.4;
+}
+
 /* ---------- Find highlights ---------- */
 .zimd-prose mark.find-hit {
   background: var(--accent-soft);

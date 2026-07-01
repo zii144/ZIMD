@@ -17,7 +17,9 @@
     pickFolder,
     readTree,
     readFile,
+    watchPath,
   } from "./lib/fs";
+  import { listen, type UnlistenFn } from "@tauri-apps/api/event";
   import { renderMarkdown } from "./lib/markdown";
   import TitleBar from "./lib/components/TitleBar.svelte";
   import Sidebar from "./lib/components/Sidebar.svelte";
@@ -25,10 +27,79 @@
   import Reader from "./lib/components/Reader.svelte";
   import Welcome from "./lib/components/Welcome.svelte";
   import PasteModal from "./lib/components/PasteModal.svelte";
+  import CommandPalette from "./lib/components/CommandPalette.svelte";
+  import { modKey } from "./lib/platform";
+  import type { FileNode, PaletteCommand, PaletteFile } from "./lib/types";
 
   let reader = $state<Reader>();
   let pasteOpen = $state(false);
+  let paletteOpen = $state(false);
   let toast = $state<string | null>(null);
+
+  function flattenTree(nodes: FileNode[], acc: PaletteFile[] = []): PaletteFile[] {
+    for (const n of nodes) {
+      if (n.is_dir && n.children) flattenTree(n.children, acc);
+      else if (!n.is_dir) acc.push({ name: n.name, path: n.path });
+    }
+    return acc;
+  }
+  const paletteFiles = $derived(flattenTree($fileTree));
+
+  const paletteCommands = $derived.by<PaletteCommand[]>(() => {
+    const cmds: PaletteCommand[] = [
+      {
+        id: "theme",
+        title: $settings.theme === "dark" ? "Switch to light theme" : "Switch to dark theme",
+        icon: $settings.theme === "dark" ? "sun" : "moon",
+        run: () =>
+          settings.update((s) => ({ ...s, theme: s.theme === "dark" ? "light" : "dark" })),
+      },
+      {
+        id: "focus",
+        title: $settings.focus ? "Exit focus mode" : "Enter focus mode",
+        icon: "book",
+        run: () => settings.update((s) => ({ ...s, focus: !s.focus })),
+      },
+      {
+        id: "sidebar",
+        title: "Toggle sidebar",
+        hint: `${modKey} B`,
+        icon: "sidebar",
+        run: () => settings.update((s) => ({ ...s, sidebarOpen: !s.sidebarOpen })),
+      },
+      {
+        id: "toc",
+        title: "Toggle contents",
+        hint: `${modKey} \\`,
+        icon: "toc",
+        run: () => settings.update((s) => ({ ...s, tocOpen: !s.tocOpen })),
+      },
+      {
+        id: "open",
+        title: "Open folder…",
+        hint: `${modKey} O`,
+        icon: "folder",
+        run: chooseFolder,
+      },
+      {
+        id: "paste",
+        title: "Paste content…",
+        hint: `⇧ ${modKey} V`,
+        icon: "paste",
+        run: () => (pasteOpen = true),
+      },
+    ];
+    if ($docOpen) {
+      cmds.splice(2, 0, {
+        id: "find",
+        title: "Find in document",
+        hint: `${modKey} F`,
+        icon: "search",
+        run: () => reader?.openFind(),
+      });
+    }
+    return cmds;
+  });
   let toastTimer: ReturnType<typeof setTimeout>;
 
   // Apply theme to <html>.
@@ -52,10 +123,29 @@
     if (!isTauri()) return;
     try {
       fileTree.set(await readTree(path));
+      watchPath(path).catch(() => {});
     } catch (e) {
       errorMsg.set(String(e));
       fileTree.set([]);
     }
+  }
+
+  // ---- Live reload on external file changes ----
+  const norm = (p: string) => p.replace(/\\/g, "/");
+  let fsTimer: ReturnType<typeof setTimeout> | undefined;
+  let fsPending = new Set<string>();
+
+  function onFsChange(paths: string[]) {
+    for (const p of paths) fsPending.add(norm(p));
+    clearTimeout(fsTimer);
+    fsTimer = setTimeout(async () => {
+      const changed = fsPending;
+      fsPending = new Set();
+      if ($rootFolder) loadTree($rootFolder); // pick up adds/removes/renames
+      if ($currentFile && changed.has(norm($currentFile))) {
+        await openFile($currentFile); // re-render; scroll position is restored
+      }
+    }, 200);
   }
 
   async function chooseFolder() {
@@ -138,6 +228,10 @@
         e.preventDefault();
         chooseFolder();
         break;
+      case "k":
+        e.preventDefault();
+        paletteOpen = true;
+        break;
       case "f":
         if ($docOpen) {
           e.preventDefault();
@@ -176,6 +270,13 @@
 
   onMount(() => {
     if ($rootFolder) loadTree($rootFolder);
+    let unlisten: UnlistenFn | undefined;
+    if (isTauri()) {
+      listen<string[]>("fs-change", (e) => onFsChange(e.payload)).then(
+        (fn) => (unlisten = fn)
+      );
+    }
+    return () => unlisten?.();
   });
 </script>
 
@@ -211,6 +312,15 @@
 
   {#if pasteOpen}
     <PasteModal onRender={renderPasted} onClose={() => (pasteOpen = false)} />
+  {/if}
+
+  {#if paletteOpen}
+    <CommandPalette
+      files={paletteFiles}
+      commands={paletteCommands}
+      onOpenFile={openFile}
+      onClose={() => (paletteOpen = false)}
+    />
   {/if}
 
   {#if toast}

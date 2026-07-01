@@ -24,8 +24,13 @@ a nightfall theme.
 - **Rich rendering** — syntax-highlighted code (theme-aware) with one-click
   copy, tables, task lists, KaTeX math, Mermaid diagrams (lazily loaded), and
   local images resolved relative to each document.
-- **In-app navigation** — relative `.md` links open inside the reader; in-document
-  find (`⌘F`) with match cycling; per-file reading-position memory.
+- **In-app navigation** — command palette (`⌘K`) for fuzzy file-jump and actions;
+  relative `.md` links open inside the reader; in-document find (`⌘F`) with match
+  cycling; per-file reading-position memory.
+- **Focus mode** — dims everything but the passage at your reading line for
+  distraction-free reading.
+- **Live reload** — edit a file in any editor and ZIMD re-renders it instantly;
+  the file tree updates as files are added or removed.
 - **Reading controls** — adjustable text size, sans/serif toggle, light/dark
   theme, word-count &amp; reading-time, and a slim reading-progress indicator.
 - **Quiet by design** — soft elevation, hairline borders, gentle motion, and a
@@ -152,6 +157,7 @@ ZIMD/
 | Shortcut       | Action              |
 | -------------- | ------------------- |
 | `⌘O`           | Open folder         |
+| `⌘K`           | Command palette     |
 | `⌘F`           | Find in document    |
 | `⇧⌘V`          | Paste content       |
 | `⌘B`           | Toggle sidebar      |
