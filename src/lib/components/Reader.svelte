@@ -12,6 +12,7 @@
   import { isTauri } from "../fs";
   import { dirName, isExternalUrl, resolvePath } from "../paths";
   import { getScroll, saveScroll } from "../scroll";
+  import { t } from "../i18n";
   import Icon from "./Icon.svelte";
 
   let { onOpenFile }: { onOpenFile: (path: string) => void } = $props();
@@ -310,19 +311,19 @@
         bind:value={findQuery}
         oninput={onFindInput}
         onkeydown={onFindKey}
-        placeholder="Find in document"
+        placeholder={$t("find.placeholder")}
         spellcheck="false"
       />
       <span class="fcount">
         {findCount ? `${findIndex + 1} / ${findCount}` : "0 / 0"}
       </span>
-      <button class="fbtn" onclick={prevMatch} title="Previous (⇧⏎)" aria-label="Previous match">
+      <button class="fbtn" onclick={prevMatch} title="{$t('find.prev')} (⇧⏎)" aria-label={$t("find.prev")}>
         <span class="up"><Icon name="chevron" size={14} /></span>
       </button>
-      <button class="fbtn" onclick={nextMatch} title="Next (⏎)" aria-label="Next match">
+      <button class="fbtn" onclick={nextMatch} title="{$t('find.next')} (⏎)" aria-label={$t("find.next")}>
         <span class="down"><Icon name="chevron" size={14} /></span>
       </button>
-      <button class="fbtn" onclick={closeFind} title="Close (Esc)" aria-label="Close find">
+      <button class="fbtn" onclick={closeFind} title="{$t('find.close')} (Esc)" aria-label={$t("find.close")}>
         <Icon name="close" size={14} />
       </button>
     </div>

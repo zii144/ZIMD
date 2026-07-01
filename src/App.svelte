@@ -29,6 +29,7 @@
   import PasteModal from "./lib/components/PasteModal.svelte";
   import CommandPalette from "./lib/components/CommandPalette.svelte";
   import { modKey } from "./lib/platform";
+  import { t, locale, locales, setLocale } from "./lib/i18n";
   import type { FileNode, PaletteCommand, PaletteFile } from "./lib/types";
 
   let reader = $state<Reader>();
@@ -46,44 +47,45 @@
   const paletteFiles = $derived(flattenTree($fileTree));
 
   const paletteCommands = $derived.by<PaletteCommand[]>(() => {
+    const tr = $t;
     const cmds: PaletteCommand[] = [
       {
         id: "theme",
-        title: $settings.theme === "dark" ? "Switch to light theme" : "Switch to dark theme",
+        title: $settings.theme === "dark" ? tr("cmd.toLight") : tr("cmd.toDark"),
         icon: $settings.theme === "dark" ? "sun" : "moon",
         run: () =>
           settings.update((s) => ({ ...s, theme: s.theme === "dark" ? "light" : "dark" })),
       },
       {
         id: "focus",
-        title: $settings.focus ? "Exit focus mode" : "Enter focus mode",
+        title: $settings.focus ? tr("cmd.focusOff") : tr("cmd.focusOn"),
         icon: "book",
         run: () => settings.update((s) => ({ ...s, focus: !s.focus })),
       },
       {
         id: "sidebar",
-        title: "Toggle sidebar",
+        title: tr("cmd.sidebar"),
         hint: `${modKey} B`,
         icon: "sidebar",
         run: () => settings.update((s) => ({ ...s, sidebarOpen: !s.sidebarOpen })),
       },
       {
         id: "toc",
-        title: "Toggle contents",
+        title: tr("cmd.contents"),
         hint: `${modKey} \\`,
         icon: "toc",
         run: () => settings.update((s) => ({ ...s, tocOpen: !s.tocOpen })),
       },
       {
         id: "open",
-        title: "Open folder…",
+        title: tr("cmd.open"),
         hint: `${modKey} O`,
         icon: "folder",
         run: chooseFolder,
       },
       {
         id: "paste",
-        title: "Paste content…",
+        title: tr("cmd.paste"),
         hint: `⇧ ${modKey} V`,
         icon: "paste",
         run: () => (pasteOpen = true),
@@ -92,10 +94,20 @@
     if ($docOpen) {
       cmds.splice(2, 0, {
         id: "find",
-        title: "Find in document",
+        title: tr("cmd.find"),
         hint: `${modKey} F`,
         icon: "search",
         run: () => reader?.openFind(),
+      });
+    }
+    // Language switchers.
+    for (const l of locales) {
+      cmds.push({
+        id: `lang-${l.code}`,
+        title: `${tr("cmd.language")} ${l.name}`,
+        icon: "command",
+        hint: l.code === $locale ? "✓" : undefined,
+        run: () => setLocale(l.code),
       });
     }
     return cmds;
@@ -150,7 +162,7 @@
 
   async function chooseFolder() {
     if (!isTauri()) {
-      flash("Folder browsing is available in the ZIMD desktop app.");
+      flash($t("toast.desktopOnly"));
       return;
     }
     try {

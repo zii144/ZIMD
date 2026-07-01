@@ -1,6 +1,7 @@
 <script lang="ts">
   import { fileTree, rootFolder } from "../stores";
   import type { FileNode } from "../types";
+  import { t } from "../i18n";
   import FileTree from "./FileTree.svelte";
   import Icon from "./Icon.svelte";
 
@@ -45,16 +46,16 @@
         <span class="ico"><Icon name="folder-open" size={16} /></span>
         <span class="fname">{folderName}</span>
       {:else}
-        <span class="fname muted">No folder open</span>
+        <span class="fname muted">{$t("side.noFolder")}</span>
       {/if}
     </div>
     <div class="rail-actions">
       {#if $rootFolder}
-        <button class="ghost-btn" onclick={onRefresh} title="Refresh">
+        <button class="ghost-btn" onclick={onRefresh} title={$t("side.refresh")}>
           <Icon name="refresh" size={15} />
         </button>
       {/if}
-      <button class="ghost-btn" onclick={onPickFolder} title="Open folder…">
+      <button class="ghost-btn" onclick={onPickFolder} title={$t("side.openFolder")}>
         <Icon name="folder" size={16} />
       </button>
     </div>
@@ -65,12 +66,12 @@
       <span class="s-ico"><Icon name="search" size={14} /></span>
       <input
         type="text"
-        placeholder="Filter files"
+        placeholder={$t("side.filter")}
         bind:value={query}
         spellcheck="false"
       />
       {#if query}
-        <button class="clear" onclick={() => (query = "")} title="Clear">
+        <button class="clear" onclick={() => (query = "")} title={$t("side.clear")}>
           <Icon name="close" size={13} />
         </button>
       {/if}
@@ -81,12 +82,12 @@
     {#if !$rootFolder}
       <button class="empty-cta" onclick={onPickFolder}>
         <span class="cta-ico"><Icon name="folder-open" size={22} /></span>
-        <span class="cta-title">Open a folder</span>
-        <span class="cta-sub">Browse your Markdown library</span>
+        <span class="cta-title">{$t("side.ctaTitle")}</span>
+        <span class="cta-sub">{$t("side.ctaSub")}</span>
       </button>
     {:else if visible.length === 0}
       <p class="empty-note">
-        {query ? "Nothing matches your filter." : "No Markdown files here."}
+        {query ? $t("side.noMatch") : $t("side.empty")}
       </p>
     {:else}
       <FileTree nodes={visible} onOpen={onOpenFile} />

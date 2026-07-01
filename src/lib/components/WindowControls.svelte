@@ -1,5 +1,6 @@
 <script lang="ts">
   import { isTauri } from "../fs";
+  import { t } from "../i18n";
 
   let maximized = $state(false);
   let ready = $state(false);
@@ -33,7 +34,7 @@
 
 {#if ready}
   <div class="wc">
-    <button class="wc-btn" onclick={minimize} title="Minimize" aria-label="Minimize">
+    <button class="wc-btn" onclick={minimize} title={$t("wc.min")} aria-label={$t("wc.min")}>
       <svg viewBox="0 0 12 12" width="11" height="11" aria-hidden="true">
         <line x1="2" y1="6" x2="10" y2="6" />
       </svg>
@@ -41,8 +42,8 @@
     <button
       class="wc-btn"
       onclick={toggleMax}
-      title={maximized ? "Restore" : "Maximize"}
-      aria-label={maximized ? "Restore" : "Maximize"}
+      title={maximized ? $t("wc.restore") : $t("wc.max")}
+      aria-label={maximized ? $t("wc.restore") : $t("wc.max")}
     >
       {#if maximized}
         <svg viewBox="0 0 12 12" width="11" height="11" aria-hidden="true">
@@ -55,7 +56,7 @@
         </svg>
       {/if}
     </button>
-    <button class="wc-btn close" onclick={close} title="Close" aria-label="Close">
+    <button class="wc-btn close" onclick={close} title={$t("wc.close")} aria-label={$t("wc.close")}>
       <svg viewBox="0 0 12 12" width="11" height="11" aria-hidden="true">
         <line x1="2.5" y1="2.5" x2="9.5" y2="9.5" />
         <line x1="9.5" y1="2.5" x2="2.5" y2="9.5" />

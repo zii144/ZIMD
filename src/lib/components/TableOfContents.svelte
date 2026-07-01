@@ -1,5 +1,6 @@
 <script lang="ts">
   import { toc, activeHeading } from "../stores";
+  import { t } from "../i18n";
 
   let { onNavigate }: { onNavigate: (id: string) => void } = $props();
 
@@ -10,7 +11,7 @@
 
 {#if $toc.length > 0}
   <nav class="toc">
-    <div class="toc-title">Contents</div>
+    <div class="toc-title">{$t("toc.title")}</div>
     <ul>
       {#each $toc as item (item.id)}
         <li>
