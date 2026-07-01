@@ -67,6 +67,39 @@ spctl -a -vvv --type install "ZIMD.app"   # should say: accepted, source=Notariz
 codesign -dv --verbose=4 "ZIMD.app"
 ```
 
+## Troubleshooting
+
+### `SecKeychainItemImport: … parameters … not valid` / `failed to import keychain certificate`
+
+The macOS job compiled and bundled the app, then failed at code signing. Signing
+was attempted (so `APPLE_SIGNING_IDENTITY` is set) but the certificate couldn't be
+imported. Usual causes, most likely first:
+
+1. **`APPLE_CERTIFICATE` base64 is malformed** — stray newlines or the wrong file.
+   Re-encode with no line wraps:
+   ```bash
+   base64 -i cert.p12 | tr -d '\n' | pbcopy
+   ```
+2. **`APPLE_CERTIFICATE_PASSWORD` doesn't match** the `.p12` export password
+   (watch for a trailing space).
+3. **The `.p12` has no private key** — re-export the *Developer ID Application*
+   entry from Keychain Access together with its key.
+
+Verify the `.p12` locally before re-uploading:
+
+```bash
+openssl pkcs12 -info -in cert.p12 -noout   # enter the password when prompted
+```
+
+Then **re-run the failed macOS job** (Actions → the run → Re-run failed jobs).
+
+### Ship unsigned instead
+
+Delete `APPLE_SIGNING_IDENTITY`, `APPLE_CERTIFICATE`, and
+`APPLE_CERTIFICATE_PASSWORD`, then re-run the macOS job. With no signing identity
+present, Tauri skips signing and produces an unsigned `.dmg`. Users open it via
+right-click → **Open** on first launch.
+
 ## Windows (later)
 
 Windows signing is not wired up yet. It needs a code-signing certificate

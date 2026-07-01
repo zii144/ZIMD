@@ -70,7 +70,15 @@ jobs:
         with:
           tagName: ${{ github.ref_name }}
           releaseName: "ZIMD ${{ github.ref_name }}"
-          releaseBody: "Download the installer for your platform from the assets below."
+          releaseBody: |
+            Download the installer for your platform from the assets below.
+
+            **macOS** — `.dmg` · **Windows** — `.msi` / `.exe` · **Linux** — `.AppImage` / `.deb` / `.rpm`
+
+            > These builds are currently **unsigned**, so the OS may warn on first launch:
+            > - **macOS**: right-click the app → **Open**, then confirm (or System Settings → Privacy & Security → Open Anyway).
+            > - **Windows**: on the SmartScreen prompt, click **More info → Run anyway**.
+            > Signed & notarized builds are planned for a future release.
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}
