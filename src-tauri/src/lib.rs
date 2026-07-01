@@ -1,8 +1,16 @@
 use std::cmp::Ordering;
 use std::fs;
 use std::path::{Path, PathBuf};
+use std::sync::Mutex;
 
+use notify::{EventKind, RecommendedWatcher, RecursiveMode, Watcher};
 use serde::Serialize;
+use tauri::{Emitter, State};
+
+/// Holds the active filesystem watcher so it stays alive between calls.
+struct WatchState {
+    watcher: Mutex<Option<RecommendedWatcher>>,
+}
 
 /// A node in the Markdown file tree returned to the frontend.
 #[derive(Serialize)]
@@ -111,11 +119,60 @@ fn base_name(path: String) -> String {
         .unwrap_or(path)
 }
 
+/// Watch a folder recursively; emit `fs-change` (a list of affected paths) to
+/// the frontend whenever files are created, modified, or removed. Calling this
+/// again replaces the previous watcher.
+#[tauri::command]
+fn watch_path(
+    app: tauri::AppHandle,
+    state: State<'_, WatchState>,
+    path: String,
+) -> Result<(), String> {
+    let root = PathBuf::from(&path);
+    if !root.is_dir() {
+        return Err(format!("Not a directory: {path}"));
+    }
+
+    let app_handle = app.clone();
+    let mut watcher = notify::recommended_watcher(move |res: notify::Result<notify::Event>| {
+        if let Ok(event) = res {
+            if matches!(
+                event.kind,
+                EventKind::Create(_) | EventKind::Modify(_) | EventKind::Remove(_)
+            ) {
+                let paths: Vec<String> = event
+                    .paths
+                    .iter()
+                    .map(|p| p.to_string_lossy().to_string())
+                    .collect();
+                let _ = app_handle.emit("fs-change", paths);
+            }
+        }
+    })
+    .map_err(|e| e.to_string())?;
+
+    watcher
+        .watch(&root, RecursiveMode::Recursive)
+        .map_err(|e| e.to_string())?;
+
+    // Replacing the stored watcher drops (and stops) any previous one.
+    *state.watcher.lock().map_err(|e| e.to_string())? = Some(watcher);
+    Ok(())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
-        .invoke_handler(tauri::generate_handler![read_tree, read_file, base_name])
+        .manage(WatchState {
+            watcher: Mutex::new(None),
+        })
+        .invoke_handler(tauri::generate_handler![
+            read_tree,
+            read_file,
+            base_name,
+            watch_path
+        ])
         .run(tauri::generate_context!())
         .expect("error while running ZIMD");
 }

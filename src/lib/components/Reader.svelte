@@ -49,7 +49,34 @@
     }
     activeHeading.set(current);
 
+    if ($settings.focus) updateFocusBlock();
+
     if ($currentFile) saveScroll($currentFile, scrollEl.scrollTop);
+  }
+
+  function updateFocusBlock() {
+    if (!articleEl || !scrollEl) return;
+    const mid =
+      scrollEl.getBoundingClientRect().top + scrollEl.clientHeight * 0.42;
+    const blocks = Array.from(articleEl.children) as HTMLElement[];
+    let best: HTMLElement | null = null;
+    let bestDist = Infinity;
+    for (const b of blocks) {
+      const r = b.getBoundingClientRect();
+      const c = r.top + r.height / 2;
+      const d = Math.abs(c - mid);
+      if (d < bestDist) {
+        bestDist = d;
+        best = b;
+      }
+    }
+    for (const b of blocks) b.classList.toggle("focus-active", b === best);
+  }
+
+  function clearFocusBlocks() {
+    articleEl
+      ?.querySelectorAll(".focus-active")
+      .forEach((e) => e.classList.remove("focus-active"));
   }
 
   export function scrollToId(id: string) {
@@ -249,6 +276,12 @@
     clearFind();
   }
 
+  // React to focus-mode toggling.
+  $effect(() => {
+    if ($settings.focus) updateFocusBlock();
+    else clearFocusBlocks();
+  });
+
   // Re-process whenever the document changes.
   $effect(() => {
     void $renderedHtml;
@@ -299,6 +332,7 @@
   <article
     bind:this={articleEl}
     class="zimd-prose"
+    class:focus={$settings.focus}
     data-font={$settings.font === "serif" ? "serif" : "sans"}
     style="--read-size:{$settings.readSize}rem; --read-measure:{$settings.measure}rem;"
     onclick={onArticleClick}

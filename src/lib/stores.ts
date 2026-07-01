@@ -11,6 +11,7 @@ const defaultSettings: Settings = {
   measure: 46,
   sidebarOpen: true,
   tocOpen: true,
+  focus: false,
 };
 
 function loadSettings(): Settings {

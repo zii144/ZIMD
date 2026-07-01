@@ -31,3 +31,8 @@ export async function readFile(path: string): Promise<string> {
 export async function baseName(path: string): Promise<string> {
   return invoke<string>("base_name", { path });
 }
+
+/** Start watching a folder for changes (emits the `fs-change` event). */
+export async function watchPath(path: string): Promise<void> {
+  return invoke("watch_path", { path });
+}
