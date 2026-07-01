@@ -1,0 +1,111 @@
+use std::cmp::Ordering;
+use std::fs;
+use std::path::{Path, PathBuf};
+
+use serde::Serialize;
+
+/// A node in the Markdown file tree returned to the frontend.
+#[derive(Serialize)]
+pub struct FileNode {
+    name: String,
+    path: String,
+    is_dir: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    children: Option<Vec<FileNode>>,
+}
+
+const MD_EXTENSIONS: [&str; 4] = ["md", "markdown", "mdown", "mkd"];
+
+fn is_markdown(path: &Path) -> bool {
+    path.extension()
+        .and_then(|e| e.to_str())
+        .map(|e| MD_EXTENSIONS.contains(&e.to_lowercase().as_str()))
+        .unwrap_or(false)
+}
+
+/// Recursively build a tree of directories and Markdown files.
+/// Directories that contain no Markdown (transitively) are pruned.
+fn build_tree(dir: &Path) -> Vec<FileNode> {
+    let mut nodes: Vec<FileNode> = Vec::new();
+
+    let entries = match fs::read_dir(dir) {
+        Ok(e) => e,
+        Err(_) => return nodes,
+    };
+
+    for entry in entries.flatten() {
+        let path = entry.path();
+        let name = entry.file_name().to_string_lossy().to_string();
+
+        // Skip hidden files/folders and common noise.
+        if name.starts_with('.') || name == "node_modules" || name == "target" {
+            continue;
+        }
+
+        if path.is_dir() {
+            let children = build_tree(&path);
+            if !children.is_empty() {
+                nodes.push(FileNode {
+                    name,
+                    path: path.to_string_lossy().to_string(),
+                    is_dir: true,
+                    children: Some(children),
+                });
+            }
+        } else if is_markdown(&path) {
+            nodes.push(FileNode {
+                name,
+                path: path.to_string_lossy().to_string(),
+                is_dir: false,
+                children: None,
+            });
+        }
+    }
+
+    // Sort: directories first, then files; each alphabetically (case-insensitive).
+    nodes.sort_by(|a, b| match (a.is_dir, b.is_dir) {
+        (true, false) => Ordering::Less,
+        (false, true) => Ordering::Greater,
+        _ => a.name.to_lowercase().cmp(&b.name.to_lowercase()),
+    });
+
+    nodes
+}
+
+/// Read a folder and return its Markdown file tree.
+#[tauri::command]
+fn read_tree(path: String) -> Result<Vec<FileNode>, String> {
+    let root = PathBuf::from(&path);
+    if !root.is_dir() {
+        return Err(format!("Not a directory: {path}"));
+    }
+    Ok(build_tree(&root))
+}
+
+/// Read the UTF-8 contents of a single Markdown file.
+#[tauri::command]
+fn read_file(path: String) -> Result<String, String> {
+    let p = PathBuf::from(&path);
+    if !is_markdown(&p) {
+        return Err("Only Markdown files can be opened.".into());
+    }
+    fs::read_to_string(&p).map_err(|e| format!("Could not read file: {e}"))
+}
+
+/// Return the base name of a path (for window titles / headers).
+#[tauri::command]
+fn base_name(path: String) -> String {
+    Path::new(&path)
+        .file_name()
+        .map(|n| n.to_string_lossy().to_string())
+        .unwrap_or(path)
+}
+
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+    tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
+        .invoke_handler(tauri::generate_handler![read_tree, read_file, base_name])
+        .run(tauri::generate_context!())
+        .expect("error while running ZIMD");
+}

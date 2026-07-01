@@ -1,0 +1,279 @@
+/* =============================================================
+   ZIMD — Prose styles for rendered Markdown (.zimd-prose)
+   Tuned for long-form, immersive reading.
+   ============================================================= */
+
+.zimd-prose {
+  font-family: var(--font-read);
+  font-size: var(--read-size);
+  line-height: var(--read-leading);
+  color: var(--ink);
+  max-width: var(--read-measure);
+  margin: 0 auto;
+  padding: var(--sp-8) var(--sp-6) 40vh;
+  letter-spacing: 0.001em;
+  -webkit-font-smoothing: antialiased;
+}
+
+.zimd-prose[data-font="serif"] {
+  font-family: var(--font-serif);
+  letter-spacing: 0;
+}
+
+/* Rhythm */
+.zimd-prose > * + * {
+  margin-top: 1.15em;
+}
+
+/* ---------- Headings ---------- */
+.zimd-prose h1,
+.zimd-prose h2,
+.zimd-prose h3,
+.zimd-prose h4,
+.zimd-prose h5,
+.zimd-prose h6 {
+  font-family: var(--font-ui);
+  font-weight: 650;
+  line-height: 1.22;
+  letter-spacing: -0.011em;
+  color: var(--ink);
+  scroll-margin-top: calc(var(--titlebar-h) + var(--sp-6));
+  position: relative;
+}
+.zimd-prose[data-font="serif"] h1,
+.zimd-prose[data-font="serif"] h2,
+.zimd-prose[data-font="serif"] h3 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+}
+
+.zimd-prose h1 {
+  font-size: 1.92em;
+  margin-top: 0;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+.zimd-prose h2 {
+  font-size: 1.42em;
+  margin-top: 2.1em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--line);
+}
+.zimd-prose h3 {
+  font-size: 1.16em;
+  margin-top: 1.8em;
+}
+.zimd-prose h4 {
+  font-size: 1.02em;
+  margin-top: 1.6em;
+  color: var(--ink-soft);
+}
+.zimd-prose h5,
+.zimd-prose h6 {
+  font-size: 0.9em;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+  margin-top: 1.5em;
+}
+
+/* Anchor affordance on hover */
+.zimd-prose .heading-anchor {
+  position: absolute;
+  left: -1.1em;
+  top: 0;
+  width: 1em;
+  color: var(--ink-faint);
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity var(--dur-1) var(--ease);
+  font-weight: 400;
+}
+.zimd-prose h1:hover .heading-anchor,
+.zimd-prose h2:hover .heading-anchor,
+.zimd-prose h3:hover .heading-anchor,
+.zimd-prose h4:hover .heading-anchor {
+  opacity: 1;
+}
+
+/* ---------- Text ---------- */
+.zimd-prose p {
+  color: var(--ink);
+}
+
+.zimd-prose a {
+  color: var(--accent-ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent-soft);
+  transition: border-color var(--dur-1) var(--ease), color var(--dur-1) var(--ease);
+}
+.zimd-prose a:hover {
+  border-bottom-color: var(--accent);
+}
+
+.zimd-prose strong {
+  font-weight: 680;
+  color: var(--ink);
+}
+.zimd-prose em {
+  font-style: italic;
+}
+.zimd-prose mark {
+  background: var(--accent-soft);
+  color: inherit;
+  padding: 0.05em 0.2em;
+  border-radius: var(--r-xs);
+}
+.zimd-prose del {
+  color: var(--ink-muted);
+}
+
+/* ---------- Lists ---------- */
+.zimd-prose ul,
+.zimd-prose ol {
+  padding-left: 1.4em;
+}
+.zimd-prose li + li {
+  margin-top: 0.35em;
+}
+.zimd-prose li::marker {
+  color: var(--ink-faint);
+}
+.zimd-prose ul ul,
+.zimd-prose ol ol,
+.zimd-prose ul ol,
+.zimd-prose ol ul {
+  margin-top: 0.35em;
+}
+
+/* Task lists */
+.zimd-prose .task-list-item {
+  list-style: none;
+  margin-left: -1.4em;
+  padding-left: 1.4em;
+}
+.zimd-prose .task-list-item input {
+  margin-right: 0.5em;
+  accent-color: var(--accent);
+  transform: translateY(1px);
+}
+
+/* ---------- Blockquote ---------- */
+.zimd-prose blockquote {
+  border-left: 2px solid var(--accent);
+  padding: 0.1em 0 0.1em 1.2em;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+.zimd-prose blockquote p {
+  color: var(--ink-soft);
+}
+
+/* ---------- Rules ---------- */
+.zimd-prose hr {
+  border: none;
+  height: 1px;
+  background: var(--line);
+  margin: 2.6em auto;
+  width: 100%;
+}
+
+/* ---------- Inline code ---------- */
+.zimd-prose :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  background: var(--surface-2);
+  color: var(--ink);
+  padding: 0.12em 0.38em;
+  border-radius: var(--r-xs);
+  border: 1px solid var(--line);
+}
+
+/* ---------- Code blocks ---------- */
+.zimd-prose pre {
+  background: var(--surface-inset);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: var(--sp-4) var(--sp-5);
+  overflow-x: auto;
+  font-size: 0.84em;
+  line-height: 1.65;
+  box-shadow: var(--shadow-sm);
+}
+.zimd-prose pre code {
+  font-family: var(--font-mono);
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--ink);
+  white-space: pre;
+}
+
+/* ---------- Tables ---------- */
+.zimd-prose table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.92em;
+  display: block;
+  overflow-x: auto;
+}
+.zimd-prose th,
+.zimd-prose td {
+  text-align: left;
+  padding: 0.6em 0.9em;
+  border-bottom: 1px solid var(--line);
+}
+.zimd-prose thead th {
+  font-family: var(--font-ui);
+  font-weight: 620;
+  font-size: 0.86em;
+  letter-spacing: 0.02em;
+  color: var(--ink-soft);
+  border-bottom: 1px solid var(--line-strong);
+}
+.zimd-prose tbody tr {
+  transition: background var(--dur-1) var(--ease);
+}
+.zimd-prose tbody tr:hover {
+  background: var(--surface);
+}
+
+/* ---------- Media ---------- */
+.zimd-prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--r-md);
+  display: block;
+  margin: 1.6em auto;
+  box-shadow: var(--shadow-md);
+}
+
+/* ---------- Mermaid ---------- */
+.zimd-prose .mermaid {
+  display: flex;
+  justify-content: center;
+  margin: 1.8em 0;
+  padding: var(--sp-5);
+  background: var(--surface-inset);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+}
+.zimd-prose .mermaid[data-processed] {
+  padding: var(--sp-5);
+}
+
+/* ---------- KaTeX ---------- */
+.zimd-prose .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.4em 0;
+}
+.zimd-prose .katex {
+  font-size: 1.02em;
+}
+
+/* First heading has no top gap */
+.zimd-prose > h1:first-child,
+.zimd-prose > h2:first-child {
+  margin-top: 0;
+}

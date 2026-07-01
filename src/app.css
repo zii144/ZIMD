@@ -1,0 +1,190 @@
+/* =============================================================
+   ZIMD — Design tokens & global styles
+   A calm, Nordic-minimal reading environment.
+   Designed & developed by Zii.
+   ============================================================= */
+
+/* ---------- Design tokens ---------- */
+:root {
+  /* Palette — Light (Daylight) */
+  --paper: #fbfbfa; /* app background */
+  --surface: #f3f3f1; /* rails, panels */
+  --surface-2: #ececea; /* hover fills */
+  --surface-inset: #ffffff; /* cards, code chrome */
+
+  --ink: #1e1e1c; /* primary text */
+  --ink-soft: #55554f; /* secondary text */
+  --ink-muted: #8f8f88; /* tertiary / captions */
+  --ink-faint: #b8b8b1; /* placeholders */
+
+  --line: rgba(24, 24, 20, 0.08); /* hairline borders */
+  --line-strong: rgba(24, 24, 20, 0.14);
+
+  --accent: #3f6890; /* restrained fjord blue */
+  --accent-soft: rgba(63, 104, 144, 0.12);
+  --accent-ink: #34567a;
+
+  --danger: #a5544a;
+
+  /* Elevation — whisper-soft, never heavy */
+  --shadow-sm: 0 1px 2px rgba(24, 24, 20, 0.04);
+  --shadow-md: 0 6px 24px -12px rgba(24, 24, 20, 0.22);
+  --shadow-lg: 0 24px 60px -24px rgba(24, 24, 20, 0.28);
+
+  /* Radii */
+  --r-xs: 5px;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 18px;
+  --r-pill: 999px;
+
+  /* Typography */
+  --font-ui: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Segoe UI", system-ui, sans-serif;
+  --font-read: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Segoe UI", system-ui, sans-serif;
+  --font-serif: "Iowan Old Style", "Palatino Linotype", Palatino, Charter,
+    "Georgia", serif;
+  --font-mono: "SF Mono", "JetBrains Mono", "Fira Code", ui-monospace,
+    Menlo, Consolas, monospace;
+
+  /* Fluid reading type scale */
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.9375rem;
+  --read-size: 1.075rem; /* user-adjustable reading size */
+  --read-leading: 1.78;
+  --read-measure: 46rem; /* comfortable line length */
+
+  /* Spacing (8pt-ish) */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+
+  /* Motion — gentle, deliberate */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-1: 120ms;
+  --dur-2: 220ms;
+  --dur-3: 360ms;
+
+  /* Layout */
+  --rail-w: 264px;
+  --toc-w: 232px;
+  --titlebar-h: 44px;
+
+  color-scheme: light;
+}
+
+/* ---------- Dark (Nightfall) ---------- */
+:root[data-theme="dark"] {
+  --paper: #14151a;
+  --surface: #1a1c22;
+  --surface-2: #23252d;
+  --surface-inset: #1f2128;
+
+  --ink: #e8e8e4;
+  --ink-soft: #a7a8a3;
+  --ink-muted: #74766f;
+  --ink-faint: #565851;
+
+  --line: rgba(255, 255, 255, 0.07);
+  --line-strong: rgba(255, 255, 255, 0.13);
+
+  --accent: #7aa7d4;
+  --accent-soft: rgba(122, 167, 212, 0.16);
+  --accent-ink: #9dc0e6;
+
+  --danger: #d1837a;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 6px 24px -12px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 24px 60px -24px rgba(0, 0, 0, 0.7);
+
+  color-scheme: dark;
+}
+
+/* ---------- Reset ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-ui);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: var(--text-base);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow: hidden; /* app owns its own scroll regions */
+  transition: background var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+
+/* ---------- Subtle, quiet scrollbars ---------- */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: var(--r-pill);
+  border: 3px solid transparent;
+  background-clip: padding-box;
+  transition: background var(--dur-2) var(--ease);
+}
+*:hover::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  background-clip: padding-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-faint);
+  background-clip: padding-box;
+}
+
+/* Respect reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

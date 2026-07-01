@@ -1,0 +1,12 @@
+import "./app.css";
+import "./hljs.css";
+import "./prose.css";
+import "katex/dist/katex.min.css";
+import App from "./App.svelte";
+import { mount } from "svelte";
+
+const app = mount(App, {
+  target: document.getElementById("app")!,
+});
+
+export default app;
