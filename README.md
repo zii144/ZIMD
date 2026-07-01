@@ -21,10 +21,13 @@ a nightfall theme.
   filterable file tree (folders first, then files).
 - **Table of contents** — auto-generated from headings, scroll-synced, click to
   jump.
-- **Rich rendering** — syntax-highlighted code (theme-aware), tables, task
-  lists, KaTeX math, and Mermaid diagrams (lazily loaded).
+- **Rich rendering** — syntax-highlighted code (theme-aware) with one-click
+  copy, tables, task lists, KaTeX math, Mermaid diagrams (lazily loaded), and
+  local images resolved relative to each document.
+- **In-app navigation** — relative `.md` links open inside the reader; in-document
+  find (`⌘F`) with match cycling; per-file reading-position memory.
 - **Reading controls** — adjustable text size, sans/serif toggle, light/dark
-  theme, and a slim reading-progress indicator.
+  theme, word-count &amp; reading-time, and a slim reading-progress indicator.
 - **Quiet by design** — soft elevation, hairline borders, gentle motion, and a
   custom overlay title bar.
 
@@ -132,6 +135,8 @@ ZIMD/
 | Shortcut       | Action              |
 | -------------- | ------------------- |
 | `⌘O`           | Open folder         |
+| `⌘F`           | Find in document    |
+| `⇧⌘V`          | Paste content       |
 | `⌘B`           | Toggle sidebar      |
 | `⌘\`           | Toggle contents     |
 | `⌘ +` / `⌘ −`  | Adjust reading size |

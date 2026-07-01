@@ -70,6 +70,11 @@ flowchart LR
     C --> D[Read in peace]
 ```
 
+## Keep exploring
+
+Follow this in-app link to [Reading features](./Reading%20features.md) — it opens
+right here in the reader.
+
 ---
 
 Designed & developed by **Zii**.

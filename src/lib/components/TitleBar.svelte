@@ -1,5 +1,11 @@
 <script lang="ts">
-  import { settings, docOpen, docTitle, readingProgress } from "../stores";
+  import {
+    settings,
+    docOpen,
+    docTitle,
+    docStats,
+    readingProgress,
+  } from "../stores";
   import { isMac } from "../platform";
   import Icon from "./Icon.svelte";
   import WindowControls from "./WindowControls.svelte";
@@ -44,7 +50,14 @@
 
   <div class="center" data-tauri-drag-region>
     {#if $docTitle}
-      <span class="doc-title">{$docTitle}</span>
+      <div class="doc-meta">
+        <span class="doc-title">{$docTitle}</span>
+        {#if $docStats}
+          <span class="doc-stats">
+            {$docStats.words.toLocaleString()} words · {$docStats.minutes} min
+          </span>
+        {/if}
+      </div>
     {/if}
   </div>
 
@@ -152,6 +165,15 @@
     height: 100%;
     align-items: center;
   }
+  .doc-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.15;
+    min-width: 0;
+    max-width: 52ch;
+  }
   .doc-title {
     font-size: var(--text-sm);
     font-weight: 560;
@@ -160,7 +182,15 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 46ch;
+    max-width: 100%;
+  }
+  .doc-stats {
+    font-size: 10.5px;
+    color: var(--ink-faint);
+    letter-spacing: 0.01em;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    margin-top: 1px;
   }
   .controls {
     display: flex;
