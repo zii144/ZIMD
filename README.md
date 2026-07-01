@@ -137,8 +137,22 @@ Each platform must be built on (or cross-compiled for) that platform.
   git push origin v0.1.0
   ```
 
-  Review the drafted release, then publish it. (Installers are unsigned until
-  code-signing/notarization secrets are configured — see below.)
+  Review the drafted release, then publish it.
+
+### Code signing (not yet configured)
+
+Installers are currently **unsigned**, so macOS Gatekeeper and Windows
+SmartScreen will warn users on first launch. To ship signed builds, add the
+relevant secrets to the repository and the `tauri-action` step will use them:
+
+- **macOS**: `APPLE_CERTIFICATE`, `APPLE_CERTIFICATE_PASSWORD`,
+  `APPLE_SIGNING_IDENTITY`, `APPLE_ID`, `APPLE_PASSWORD`, `APPLE_TEAM_ID`
+  (Developer ID certificate + notarization).
+- **Windows**: a code-signing certificate configured via Tauri's
+  `bundle.windows.certificateThumbprint` or a signing secret.
+
+Until then, users can open the app via right-click → Open (macOS) or
+"More info → Run anyway" (Windows).
 
 ## Regenerate the icon
 
