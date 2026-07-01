@@ -6,6 +6,8 @@
 
 Designed & developed by Zii.
 
+[![CI](https://github.com/zii144/ZIMD/actions/workflows/ci.yml/badge.svg)](https://github.com/zii144/ZIMD/actions/workflows/ci.yml)
+
 </div>
 
 ---
@@ -121,6 +123,22 @@ Installers are written to `src-tauri/target/release/bundle/`:
 - **Linux** — `.deb`, `.rpm`, and `.AppImage`
 
 Each platform must be built on (or cross-compiled for) that platform.
+
+## Continuous integration & releases
+
+- **CI** (`.github/workflows/ci.yml`) runs on every push to `main` and every
+  PR: frontend tests + type-check + build, and `cargo test` / `cargo build` on
+  macOS, Windows, and Linux.
+- **Releases** (`.github/workflows/release.yml`) trigger on a version tag and
+  build installers for all three platforms into a **draft** GitHub Release:
+
+  ```bash
+  git tag v0.1.0
+  git push origin v0.1.0
+  ```
+
+  Review the drafted release, then publish it. (Installers are unsigned until
+  code-signing/notarization secrets are configured — see below.)
 
 ## Regenerate the icon
 
