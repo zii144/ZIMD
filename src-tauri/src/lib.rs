@@ -119,3 +119,54 @@ pub fn run() {
         .run(tauri::generate_context!())
         .expect("error while running ZIMD");
 }
+
+#[cfg(test)]
+mod tests {
+    use super::{build_tree, is_markdown};
+    use std::fs;
+    use std::path::Path;
+
+    #[test]
+    fn detects_markdown_extensions() {
+        assert!(is_markdown(Path::new("a.md")));
+        assert!(is_markdown(Path::new("a.markdown")));
+        assert!(is_markdown(Path::new("a.mkd")));
+        assert!(is_markdown(Path::new("A.MD"))); // case-insensitive
+        assert!(!is_markdown(Path::new("a.txt")));
+        assert!(!is_markdown(Path::new("noext")));
+    }
+
+    #[test]
+    fn builds_pruned_and_sorted_tree() {
+        let root = std::env::temp_dir().join(format!("zimd_test_{}", std::process::id()));
+        let _ = fs::remove_dir_all(&root);
+        fs::create_dir_all(root.join("sub")).unwrap();
+        fs::create_dir_all(root.join("empty")).unwrap();
+        fs::write(root.join("a.md"), "# a").unwrap();
+        fs::write(root.join("b.txt"), "b").unwrap();
+        fs::write(root.join("sub").join("c.md"), "# c").unwrap();
+
+        let tree = build_tree(&root, 0);
+
+        // `empty/` has no Markdown -> pruned; `b.txt` -> excluded.
+        // Directories sort before files: [sub, a.md].
+        assert_eq!(tree.len(), 2);
+        assert_eq!(tree[0].name, "sub");
+        assert!(tree[0].is_dir);
+        assert_eq!(tree[1].name, "a.md");
+        assert!(!tree[1].is_dir);
+
+        let sub_children = tree[0].children.as_ref().unwrap();
+        assert_eq!(sub_children.len(), 1);
+        assert_eq!(sub_children[0].name, "c.md");
+
+        let _ = fs::remove_dir_all(&root);
+    }
+
+    #[test]
+    fn respects_depth_guard() {
+        // A non-existent directory yields an empty tree rather than panicking.
+        let tree = build_tree(Path::new("/zimd/does/not/exist"), 0);
+        assert!(tree.is_empty());
+    }
+}

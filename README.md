@@ -86,6 +86,23 @@ launches are fast.
 > Try it immediately: once the window opens, click **Open a folder** and choose
 > the included `sample/` folder.
 
+## Testing
+
+Frontend unit tests (Vitest) cover the pure logic — path resolution, the
+Markdown pipeline (TOC, mermaid routing, task lists, math, highlighting), and
+reading-position memory:
+
+```bash
+npm test          # run once
+npm run test:watch
+```
+
+Backend unit tests (Rust) cover the file-tree walker and Markdown detection:
+
+```bash
+cd src-tauri && cargo test
+```
+
 ## Build a release app
 
 ```bash
