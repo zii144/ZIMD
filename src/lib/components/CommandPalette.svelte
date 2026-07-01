@@ -1,5 +1,6 @@
 <script lang="ts">
   import Icon from "./Icon.svelte";
+  import { t } from "../i18n";
   import type { PaletteCommand, PaletteFile } from "../types";
 
   let {
@@ -138,14 +139,14 @@
         bind:this={input}
         bind:value={query}
         onkeydown={onKey}
-        placeholder="Jump to a file or run a command…"
+        placeholder={$t("palette.placeholder")}
         spellcheck="false"
       />
     </div>
 
     <div class="p-list" bind:this={listEl} role="listbox" tabindex="-1">
       {#if results.length === 0}
-        <div class="p-empty">No matches</div>
+        <div class="p-empty">{$t("palette.noMatches")}</div>
       {:else}
         {#each results as item, i (item.kind + item.title + (item.hint ?? ""))}
           <!-- svelte-ignore a11y_click_events_have_key_events -->

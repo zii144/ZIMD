@@ -7,6 +7,7 @@
     readingProgress,
   } from "../stores";
   import { isMac } from "../platform";
+  import { t } from "../i18n";
   import Icon from "./Icon.svelte";
   import WindowControls from "./WindowControls.svelte";
 
@@ -57,7 +58,9 @@
         <span class="doc-title">{$docTitle}</span>
         {#if $docStats}
           <span class="doc-stats">
-            {$docStats.words.toLocaleString()} words · {$docStats.minutes} min
+            {$docStats.words.toLocaleString()}
+            {$t("tb.words")} · {$docStats.minutes}
+            {$t("tb.min")}
           </span>
         {/if}
       </div>
@@ -66,7 +69,7 @@
 
   <div class="controls">
     <div class="group">
-      <button class="tb-btn" onclick={onPaste} title="Paste content (⇧⌘V)">
+      <button class="tb-btn" onclick={onPaste} title="{$t('tb.paste')} (⇧⌘V)">
         <Icon name="paste" size={17} />
       </button>
     </div>
@@ -74,17 +77,17 @@
     <span class="divider"></span>
 
     <div class="group">
-      <button class="tb-btn" onclick={() => bump(-0.05)} title="Smaller text">
+      <button class="tb-btn" onclick={() => bump(-0.05)} title={$t("tb.smaller")}>
         <Icon name="minus" size={15} />
       </button>
-      <button class="tb-btn" onclick={() => bump(0.05)} title="Larger text">
+      <button class="tb-btn" onclick={() => bump(0.05)} title={$t("tb.larger")}>
         <Icon name="plus" size={15} />
       </button>
       <button
         class="tb-btn"
         class:on={$settings.font === "serif"}
         onclick={toggleFont}
-        title={$settings.font === "serif" ? "Serif — click for sans" : "Sans — click for serif"}
+        title={$settings.font === "serif" ? $t("tb.serifOn") : $t("tb.serifOff")}
       >
         <Icon name="serif" size={17} />
       </button>
@@ -97,14 +100,14 @@
         class="tb-btn"
         class:on={$settings.focus}
         onclick={toggleFocus}
-        title="Focus mode"
+        title={$t("tb.focus")}
       >
         <Icon name="book" size={17} />
       </button>
       <button
         class="tb-btn"
         onclick={toggleTheme}
-        title={$settings.theme === "dark" ? "Switch to light" : "Switch to dark"}
+        title={$settings.theme === "dark" ? $t("tb.toLight") : $t("tb.toDark")}
       >
         <Icon name={$settings.theme === "dark" ? "sun" : "moon"} size={17} />
       </button>
@@ -112,7 +115,7 @@
         class="tb-btn"
         class:on={$settings.sidebarOpen}
         onclick={toggleSidebar}
-        title="Toggle sidebar"
+        title={$t("tb.sidebar")}
       >
         <Icon name="sidebar" size={17} />
       </button>
@@ -120,7 +123,7 @@
         class="tb-btn"
         class:on={$settings.tocOpen}
         onclick={toggleToc}
-        title="Toggle contents"
+        title={$t("tb.contents")}
       >
         <Icon name="toc" size={17} />
       </button>

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { rootFolder } from "../stores";
   import { modKey as mod } from "../platform";
+  import { t } from "../i18n";
   import Icon from "./Icon.svelte";
 
   let {
@@ -14,23 +15,23 @@
     <span class="glyph">Z</span>
   </div>
   <h1 class="wordmark">ZIMD</h1>
-  <p class="tag">A calm place to read Markdown.</p>
+  <p class="tag">{$t("welcome.tag")}</p>
 
   <div class="cta-row">
     <button class="open-btn" onclick={onPickFolder}>
       <Icon name="folder-open" size={17} />
-      <span>{$rootFolder ? "Choose a document" : "Open a folder"}</span>
+      <span>{$rootFolder ? $t("welcome.choose") : $t("welcome.open")}</span>
     </button>
     <button class="paste-btn" onclick={onPaste}>
       <Icon name="paste" size={16} />
-      <span>Paste content</span>
+      <span>{$t("welcome.paste")}</span>
     </button>
   </div>
 
   <div class="hints">
-    <div class="hint"><kbd>{mod}</kbd><kbd>O</kbd><span>Open folder</span></div>
-    <div class="hint"><kbd>⇧</kbd><kbd>{mod}</kbd><kbd>V</kbd><span>Paste content</span></div>
-    <div class="hint"><kbd>{mod}</kbd><kbd>\</kbd><span>Toggle contents</span></div>
+    <div class="hint"><kbd>{mod}</kbd><kbd>O</kbd><span>{$t("welcome.hintOpen")}</span></div>
+    <div class="hint"><kbd>⇧</kbd><kbd>{mod}</kbd><kbd>V</kbd><span>{$t("welcome.hintPaste")}</span></div>
+    <div class="hint"><kbd>{mod}</kbd><kbd>\</kbd><span>{$t("welcome.hintContents")}</span></div>
   </div>
 
   <p class="sig">Designed &amp; developed by Zii</p>

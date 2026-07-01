@@ -35,6 +35,8 @@ a nightfall theme.
   the file tree updates as files are added or removed.
 - **Reading controls** — adjustable text size, sans/serif toggle, light/dark
   theme, word-count &amp; reading-time, and a slim reading-progress indicator.
+- **Multi-language UI** — English, 繁體中文, 日本語, and Español, auto-detected
+  from your system and switchable anytime from the command palette.
 - **Quiet by design** — soft elevation, hairline borders, gentle motion, and a
   custom overlay title bar.
 
@@ -93,11 +95,26 @@ launches are fast.
 > Try it immediately: once the window opens, click **Open a folder** and choose
 > the included `sample/` folder.
 
+## Languages
+
+The interface ships in **English, 繁體中文 (Traditional Chinese), 日本語
+(Japanese), and Español**. On first launch ZIMD matches your OS locale; you can
+switch anytime via the command palette (`⌘K` → "Language: …"). The choice is
+remembered.
+
+To add a language:
+
+1. Copy `src/lib/i18n/en.ts` to e.g. `src/lib/i18n/fr.ts` and translate every
+   value (keep the keys identical).
+2. Register it in `src/lib/i18n/index.ts` — add to `locales` and
+   `dictionaries`, and (optionally) map it in `detect()`.
+3. `npm test` verifies your new locale defines exactly the English keys.
+
 ## Testing
 
 Frontend unit tests (Vitest) cover the pure logic — path resolution, the
 Markdown pipeline (TOC, mermaid routing, task lists, math, highlighting), and
-reading-position memory:
+reading-position memory, and locale key parity:
 
 ```bash
 npm test          # run once

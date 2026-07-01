@@ -1,5 +1,6 @@
 <script lang="ts">
   import { modKey as mod } from "../platform";
+  import { t } from "../i18n";
   import Icon from "./Icon.svelte";
 
   let {
@@ -19,7 +20,7 @@
   function submit() {
     const body = text.trim();
     if (!body) return;
-    onRender(body, title.trim() || "Pasted");
+    onRender(body, title.trim() || $t("paste.untitled"));
   }
 
   function onKey(e: KeyboardEvent) {
@@ -53,11 +54,11 @@
       <span class="s-ico"><Icon name="paste" size={17} /></span>
       <input
         class="title-in"
-        placeholder="Untitled"
+        placeholder={$t("paste.untitled")}
         bind:value={title}
         spellcheck="false"
       />
-      <button class="x" onclick={onClose} title="Close">
+      <button class="x" onclick={onClose} title={$t("common.close")}>
         <Icon name="close" size={16} />
       </button>
     </header>
@@ -66,16 +67,16 @@
       bind:this={area}
       bind:value={text}
       class="paste-area"
-      placeholder="Paste or type Markdown here…"
+      placeholder={$t("paste.placeholder")}
       spellcheck="false"
     ></textarea>
 
     <footer class="sheet-foot">
-      <span class="count">{chars.toLocaleString()} characters</span>
+      <span class="count">{chars.toLocaleString()} {$t("paste.characters")}</span>
       <div class="actions">
-        <button class="btn ghost" onclick={onClose}>Cancel</button>
+        <button class="btn ghost" onclick={onClose}>{$t("common.cancel")}</button>
         <button class="btn primary" onclick={submit} disabled={!text.trim()}>
-          Render
+          {$t("paste.render")}
           <span class="kbd-hint">{mod}↵</span>
         </button>
       </div>
