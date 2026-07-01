@@ -6,6 +6,8 @@
 
 Designed & developed by Zii.
 
+[![CI](https://github.com/zii144/ZIMD/actions/workflows/ci.yml/badge.svg)](https://github.com/zii144/ZIMD/actions/workflows/ci.yml)
+
 </div>
 
 ---
@@ -121,6 +123,36 @@ Installers are written to `src-tauri/target/release/bundle/`:
 - **Linux** — `.deb`, `.rpm`, and `.AppImage`
 
 Each platform must be built on (or cross-compiled for) that platform.
+
+## Continuous integration & releases
+
+- **CI** (`.github/workflows/ci.yml`) runs on every push to `main` and every
+  PR: frontend tests + type-check + build, and `cargo test` / `cargo build` on
+  macOS, Windows, and Linux.
+- **Releases** (`.github/workflows/release.yml`) trigger on a version tag and
+  build installers for all three platforms into a **draft** GitHub Release:
+
+  ```bash
+  git tag v0.1.0
+  git push origin v0.1.0
+  ```
+
+  Review the drafted release, then publish it.
+
+### Code signing (not yet configured)
+
+Installers are currently **unsigned**, so macOS Gatekeeper and Windows
+SmartScreen will warn users on first launch. To ship signed builds, add the
+relevant secrets to the repository and the `tauri-action` step will use them:
+
+- **macOS**: `APPLE_CERTIFICATE`, `APPLE_CERTIFICATE_PASSWORD`,
+  `APPLE_SIGNING_IDENTITY`, `APPLE_ID`, `APPLE_PASSWORD`, `APPLE_TEAM_ID`
+  (Developer ID certificate + notarization).
+- **Windows**: a code-signing certificate configured via Tauri's
+  `bundle.windows.certificateThumbprint` or a signing secret.
+
+Until then, users can open the app via right-click → Open (macOS) or
+"More info → Run anyway" (Windows).
 
 ## Regenerate the icon
 
