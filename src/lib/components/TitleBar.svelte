@@ -33,6 +33,9 @@
       font: s.font === "serif" ? "sans" : "serif",
     }));
   }
+  function toggleFocus() {
+    settings.update((s) => ({ ...s, focus: !s.focus }));
+  }
   function bump(delta: number) {
     settings.update((s) => ({
       ...s,
@@ -90,6 +93,14 @@
     <span class="divider"></span>
 
     <div class="group">
+      <button
+        class="tb-btn"
+        class:on={$settings.focus}
+        onclick={toggleFocus}
+        title="Focus mode"
+      >
+        <Icon name="book" size={17} />
+      </button>
       <button
         class="tb-btn"
         onclick={toggleTheme}
