@@ -25,8 +25,13 @@ fn is_markdown(path: &Path) -> bool {
 
 /// Recursively build a tree of directories and Markdown files.
 /// Directories that contain no Markdown (transitively) are pruned.
-fn build_tree(dir: &Path) -> Vec<FileNode> {
+fn build_tree(dir: &Path, depth: usize) -> Vec<FileNode> {
     let mut nodes: Vec<FileNode> = Vec::new();
+
+    // Guard against pathological trees (and any missed symlink cycle).
+    if depth > 40 {
+        return nodes;
+    }
 
     let entries = match fs::read_dir(dir) {
         Ok(e) => e,
@@ -42,8 +47,13 @@ fn build_tree(dir: &Path) -> Vec<FileNode> {
             continue;
         }
 
+        // Skip symlinks entirely to avoid following cycles out of the folder.
+        if path.is_symlink() {
+            continue;
+        }
+
         if path.is_dir() {
-            let children = build_tree(&path);
+            let children = build_tree(&path, depth + 1);
             if !children.is_empty() {
                 nodes.push(FileNode {
                     name,
@@ -79,7 +89,7 @@ fn read_tree(path: String) -> Result<Vec<FileNode>, String> {
     if !root.is_dir() {
         return Err(format!("Not a directory: {path}"));
     }
-    Ok(build_tree(&root))
+    Ok(build_tree(&root, 0))
 }
 
 /// Read the UTF-8 contents of a single Markdown file.
