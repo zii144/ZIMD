@@ -40,13 +40,14 @@
 
   /* Typography */
   --font-ui: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text",
-    "Segoe UI", system-ui, sans-serif;
-  --font-read: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text",
-    "Segoe UI", system-ui, sans-serif;
+    "Segoe UI Variable", "Segoe UI", system-ui, Roboto, "Helvetica Neue",
+    Cantarell, "Ubuntu", Arial, sans-serif;
+  --font-read: var(--font-ui);
   --font-serif: "Iowan Old Style", "Palatino Linotype", Palatino, Charter,
-    "Georgia", serif;
-  --font-mono: "SF Mono", "JetBrains Mono", "Fira Code", ui-monospace,
-    Menlo, Consolas, monospace;
+    Georgia, "Noto Serif", "Liberation Serif", "Times New Roman", serif;
+  --font-mono: "SF Mono", "JetBrains Mono", "Fira Code", "Cascadia Code",
+    "Cascadia Mono", ui-monospace, Menlo, Consolas, "DejaVu Sans Mono",
+    "Liberation Mono", "Roboto Mono", monospace;
 
   /* Fluid reading type scale */
   --text-xs: 0.75rem;

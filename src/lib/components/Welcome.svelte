@@ -1,13 +1,12 @@
 <script lang="ts">
   import { rootFolder } from "../stores";
+  import { modKey as mod } from "../platform";
   import Icon from "./Icon.svelte";
 
   let {
     onPickFolder,
     onPaste,
   }: { onPickFolder: () => void; onPaste: () => void } = $props();
-
-  const mod = navigator.platform.toLowerCase().includes("mac") ? "⌘" : "Ctrl";
 </script>
 
 <div class="welcome">

@@ -32,17 +32,43 @@ a nightfall theme.
 
 Tauri 2 (Rust) · Svelte 5 · Vite 6 · markdown-it · highlight.js · KaTeX · Mermaid.
 
-## Prerequisites (macOS)
+Runs on **macOS, Windows, and Linux**. On macOS the native traffic-light
+controls sit over an overlay title bar; on Windows and Linux ZIMD draws its own
+minimal window controls (minimize / maximize / close). Typography and keyboard
+hints adapt to each platform automatically.
 
-1. **Rust** — install via [rustup](https://rustup.rs):
-   ```bash
-   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-   ```
-2. **Xcode Command Line Tools**:
-   ```bash
-   xcode-select --install
-   ```
-3. **Node.js 18+** (Node 20/22 recommended).
+## Prerequisites (all platforms)
+
+- **Rust** (stable ≥ 1.87) via [rustup](https://rustup.rs).
+- **Node.js 18+** (20/22 recommended).
+
+Plus the platform-specific system dependencies below.
+
+### macOS
+
+```bash
+xcode-select --install
+```
+
+### Windows
+
+- **Microsoft C++ Build Tools** (or Visual Studio 2022 with the “Desktop
+  development with C++” workload).
+- **WebView2 Runtime** — preinstalled on Windows 11; on Windows 10 install it
+  from Microsoft’s Evergreen distributable.
+
+### Linux
+
+Install the WebKitGTK and build dependencies (Debian/Ubuntu shown):
+
+```bash
+sudo apt update
+sudo apt install libwebkit2gtk-4.1-dev build-essential curl wget file \
+  libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev
+```
+
+(For Fedora/Arch, install the equivalent `webkit2gtk4.1`, `openssl`, and
+`librsvg2` development packages.)
 
 ## Run in development
 
@@ -63,8 +89,13 @@ launches are fast.
 npm run tauri build
 ```
 
-The signed-or-unsigned `.app` / `.dmg` is written to
-`src-tauri/target/release/bundle/`.
+Installers are written to `src-tauri/target/release/bundle/`:
+
+- **macOS** — `.app` and `.dmg`
+- **Windows** — `.msi` (WiX) and `.exe` (NSIS)
+- **Linux** — `.deb`, `.rpm`, and `.AppImage`
+
+Each platform must be built on (or cross-compiled for) that platform.
 
 ## Regenerate the icon
 

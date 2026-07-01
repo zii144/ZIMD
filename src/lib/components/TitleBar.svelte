@@ -1,12 +1,10 @@
 <script lang="ts">
   import { settings, docOpen, docTitle, readingProgress } from "../stores";
+  import { isMac } from "../platform";
   import Icon from "./Icon.svelte";
+  import WindowControls from "./WindowControls.svelte";
 
   let { onPaste }: { onPaste: () => void } = $props();
-
-  const isMac =
-    typeof navigator !== "undefined" &&
-    navigator.platform.toLowerCase().includes("mac");
 
   const MIN = 0.85;
   const MAX = 1.5;
@@ -103,6 +101,11 @@
         <Icon name="toc" size={17} />
       </button>
     </div>
+
+    {#if !isMac}
+      <span class="divider"></span>
+      <WindowControls />
+    {/if}
   </div>
 
   <div

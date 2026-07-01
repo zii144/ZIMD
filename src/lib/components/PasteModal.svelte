@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { modKey as mod } from "../platform";
   import Icon from "./Icon.svelte";
 
   let {
@@ -12,11 +13,6 @@
   let text = $state("");
   let title = $state("");
   let area = $state<HTMLTextAreaElement>();
-
-  const isMac =
-    typeof navigator !== "undefined" &&
-    navigator.platform.toLowerCase().includes("mac");
-  const mod = isMac ? "⌘" : "Ctrl";
 
   const chars = $derived(text.length);
 
