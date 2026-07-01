@@ -77,6 +77,11 @@ export const renderedHtml = writable<string>("");
 /** Table of contents for the current document. */
 export const toc = writable<TocItem[]>([]);
 
+/** Reading statistics for the current document. */
+export const docStats = writable<{ words: number; minutes: number } | null>(
+  null
+);
+
 /** The heading id currently in view (for TOC highlighting). */
 export const activeHeading = writable<string | null>(null);
 

@@ -138,6 +138,12 @@
         e.preventDefault();
         chooseFolder();
         break;
+      case "f":
+        if ($docOpen) {
+          e.preventDefault();
+          reader?.openFind();
+        }
+        break;
       case "b":
         e.preventDefault();
         settings.update((s) => ({ ...s, sidebarOpen: !s.sidebarOpen }));
@@ -189,7 +195,7 @@
 
     <main class="stage">
       {#if $docOpen}
-        <Reader bind:this={reader} />
+        <Reader bind:this={reader} onOpenFile={openFile} />
       {:else}
         <Welcome onPickFolder={chooseFolder} onPaste={() => (pasteOpen = true)} />
       {/if}
